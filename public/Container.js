@@ -41,7 +41,7 @@ class Contenedor {
                  //agregar producto adicional
                  const lastId = products [products.length-1].id+1;
                  product.id = lastId;
-                 products.push(product);
+                 products.push(products);
                  await fs.promises.writeFile(this.archivo,JSON.stringify(products,null,2));
                 } else{
                  // entonces primer producto
