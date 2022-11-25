@@ -60,32 +60,10 @@ routerExpress.post('/', async(req,res) =>{
 })
 
 routerExpress.put('/:id', async(req,res) =>{
-   let { title, price} = req.body;
-   const id = parseInt(req.params.id);
-
-   let product = await data.getById(id);
-   product["title"] = title;
-   product["price"] = price;
-
-   const newProduct = {
-    "title" : title,
-    "price" : price,
-    ...product
-   }
-
-   await data.deleteById(product.id);
-   await data.overwrite(newProduct)
-
-   if(isNaN(id)) {
-    error = {
-        error: true,
-        code: 502,
-        msg: 'The parameter is out of range'
-    }
-    res.json({error})
-} else {
-    product == undefined ? res.json({error}) : res.json({newProduct});
-}
+    const id = parseInt(req.params.id)
+    const productos = await data.getAll()
+    data.overwrite(id, req.body)
+    res.json({mensaje: 'Se ha actualizo la producto con exito'})
 })
 
 routerExpress.delete('/:id', async(req,res) => {

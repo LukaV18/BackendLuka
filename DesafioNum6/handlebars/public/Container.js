@@ -26,18 +26,9 @@ class Contenedor {
     async overwrite(product){
         try{
             const products = await this.getAll();
-            if (products.some(el => el.id === idChange)) {
-                let index = productos.findIndex(el => el.id === idChange)
-                productos[index].title = newProduct.title;
-                productos[index].price = newProduct.price;
-                productos[index].thumbnail = newProduct.thumbnail;
+            products.push(product);
+            await fs.promises.writeFile(this.filename, JSON.stringify(products, null, 2));
 
-                const contenidoNuevo = JSON.stringify(productos,null,2)
-
-                await fs.promises.writeFile(this.archivo, contenidoNuevo)
-                } else {
-                    console.log("No hay producto con ese Id")
-                }
             } catch (err){
                 console.log(err);
             }

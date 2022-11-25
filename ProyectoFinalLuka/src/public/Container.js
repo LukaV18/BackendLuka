@@ -20,24 +20,16 @@ class Contenedor {
         /* console.log(content); */
         return contentJson;
         } catch (error) {
-            console.log("error al obtener los productos")
+            console.log("error al obtener los productos");
+            console.log(error)
         }
     }
     async overwrite(product){
         try{
             const products = await this.getAll();
-            if (products.some(el => el.id === idChange)) {
-                let index = productos.findIndex(el => el.id === idChange)
-                productos[index].title = newProduct.title;
-                productos[index].price = newProduct.price;
-                productos[index].thumbnail = newProduct.thumbnail;
+            products.push(product);
+            await fs.promises.writeFile(this.archivo, JSON.stringify(products, null, 2));
 
-                const contenidoNuevo = JSON.stringify(productos,null,2)
-
-                await fs.promises.writeFile(this.archivo, contenidoNuevo)
-                } else {
-                    console.log("No hay producto con ese Id")
-                }
             } catch (err){
                 console.log(err);
             }
@@ -48,13 +40,13 @@ class Contenedor {
                 const products = await this.getAll();
                 if(products.length>0) {
                  //agregar producto adicional
-                 const lastId = products.reduce((acc,item) => item.id > acc ? acc = item.id : acc,0);
-                 const newProduct = {
-                    id: lastId+1,
-                 ...product
-                 };
-                 products.push(newProduct);
-                 await fs.promises.writeFile(this.archivo,JSON.stringify(products, null,2));
+                 const lastId = products [products.length-1].id+1;
+                 product.id = lastId;
+                 let date = new Date();
+                 let fecha = date.getDate() +'/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                 product.timestamp = fecha;
+                 products.push(product);
+                 await fs.promises.writeFile(this.archivo,JSON.stringify(products,null,2));
                 } else{
                  // entonces primer producto
                  product.id = 1;
@@ -73,9 +65,9 @@ class Contenedor {
         try {
             const productos = await this.getAll();
             const deleteProducto = productos.filter(producto => producto.id !== id);
-            await fs.promises.writeFile(this.filename, JSON.stringify(deleteProducto, null, 2));
+            await fs.promises.writeFile(this.archivo, JSON.stringify(deleteProducto, null, 2));
         } catch (error) {
-            console.log("No se pudo borrar el producto")
+            console.log("No se pudo borrar el producto.")
         }
     }
 };

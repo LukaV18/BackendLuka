@@ -26,31 +26,42 @@ class Contenedor {
     async overwrite(product){
         try{
             const products = await this.getAll();
-            products.push(product);
-            await fs.promises.writeFile(this.filename, JSON.stringify(products, null, 2));
+            if (products.some(el => el.id === idChange)) {
+                let index = productos.findIndex(el => el.id === idChange)
+                productos[index].title = newProduct.title;
+                productos[index].price = newProduct.price;
+                productos[index].thumbnail = newProduct.thumbnail;
 
+                const contenidoNuevo = JSON.stringify(productos,null,2)
+
+                await fs.promises.writeFile(this.archivo, contenidoNuevo)
+                } else {
+                    console.log("No hay producto con ese Id")
+                }
             } catch (err){
                 console.log(err);
             }
     }
+
+    
     async save(product){
         try {
             if(fs.existsSync(this.archivo)) {
                 const products = await this.getAll();
                 if(products.length>0) {
                  //agregar producto adicional
-                 const lastId = products [products.length-1].id+1;
+                 const lastId = products.length+1;
                  product.id = lastId;
-                 products.push(products);
+                 products.push(product);
                  await fs.promises.writeFile(this.archivo,JSON.stringify(products,null,2));
                 } else{
                  // entonces primer producto
                  product.id = 1;
-                 fs.promises.writeFile(this.archivo,JSON.stringify([product],null,2));
+                 fs.promises.writeFile(this.archivo,JSON.stringify(products,null,2));
                 }
             } else {
                 product.id = 1;
-                fs.promises.writeFile(this.archivo,JSON.stringify([product],null,2));
+                fs.promises.writeFile(this.archivo,JSON.stringify(products,null,2));
             }
            
         } catch (error) {

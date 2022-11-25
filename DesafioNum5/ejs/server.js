@@ -48,3 +48,10 @@ app.post("/productos", async(req,res) =>{
     res.redirect("/");
 })
 
+
+app.put('/:id', async(req,res) =>{
+    const id = parseInt(req.params.id)
+    const productos = await data.getAll()
+    data.overwrite(id, req.body)
+    res.json({mensaje: 'Se ha actualizo la producto con exito'})
+})
